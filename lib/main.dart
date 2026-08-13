@@ -1,21 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:mandarinho/database.dart';
 import 'package:mandarinho/functionalities/search/view.dart';
+import 'package:provider/provider.dart';
+import 'package:sqlite_async/sqlite_async.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final db = await DbConnection.getConnection();
+  runApp(MyApp(db: db));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SqliteDatabase db;
+
+  const MyApp({super.key, required this.db});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.lightGreen)),
-      home: Scaffold(
-        appBar: AppBar(title: Text("Mandarinho")),
-        body: Padding(padding: .all(8), child: SearchView()),
+    return Provider(
+      create: (ctx) => db,
+      lazy: false,
+      dispose: (ctx, db) => db.close(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.lightGreen)),
+        home: Scaffold(
+          appBar: AppBar(title: Text("Mandarinho")),
+          body: Padding(padding: .all(8), child: SearchView()),
+        ),
       ),
     );
   }

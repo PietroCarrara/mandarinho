@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mandarinho/core_models.dart';
+import 'package:sqlite_async/sqlite_async.dart';
 
 class SearchViewModel extends ChangeNotifier {
   String query = "";
@@ -7,24 +8,15 @@ class SearchViewModel extends ChangeNotifier {
   bool searching = false;
 
   // TODO: Thread safety
-  void setSearch(String query) async {
+  // Query formats: "你好", "nihao", "ni3hao3", "ni3好"
+  void setSearch(String query, SqliteDatabase db) async {
     searching = true;
     this.query = query;
     results = [];
     notifyListeners();
 
-    await Future.delayed(Duration(seconds: 1));
-
+    results = await DictionaryEntry.search(db, query);
     searching = false;
-    results = [
-      DictionaryEntry(
-        hanziSimplified: "你好",
-        piyin: "nǐhǎo",
-        translations: [
-          Translation(portuguese: ["Olá", "Tudo bem?"]),
-        ],
-      ),
-    ];
     notifyListeners();
   }
 }

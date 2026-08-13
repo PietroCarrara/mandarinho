@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mandarinho/functionalities/search/viewmodel.dart';
 import 'package:provider/provider.dart';
+import 'package:sqlite_async/sqlite_async.dart';
 
 class SearchView extends StatelessWidget {
   const SearchView({super.key});
@@ -51,11 +51,12 @@ class SearchInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final searchViewModel = Provider.of<SearchViewModel>(context);
+    final db = Provider.of<SqliteDatabase>(context);
 
     return TextField(
       autofocus: true,
       decoration: InputDecoration(hintText: "Busque por português ou chinês"),
-      onChanged: (value) => searchViewModel.setSearch(value),
+      onChanged: (value) => searchViewModel.setSearch(value, db),
     );
   }
 }

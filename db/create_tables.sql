@@ -1,16 +1,18 @@
 CREATE TABLE dictionary_entries (
-    id INTEGER PRIMARY KEY,
-    hanzi TEXT NOT NULL,
-    pinyin TEXT NOT NULL
+    dictionary_entry_id INTEGER PRIMARY KEY,
+    hanzi_simplified TEXT NOT NULL,
+    pinyin TEXT NOT NULL,
+    pinyin_ascii TEXT NOT NULL,
+    pinyin_numeric TEXT NOT NULL
 );
 
 CREATE TABLE translations (
-    id INTEGER PRIMARY KEY,
+    translation_id INTEGER PRIMARY KEY,
     dictionary_entry_id INTEGER,
     portuguese TEXT,
-    FOREIGN KEY(dictionary_entry_id) REFERENCES dictionary_entries(id)
+    FOREIGN KEY(dictionary_entry_id) REFERENCES dictionary_entries(dictionary_entry_id)
 );
 
-INSERT INTO dictionary_entries(hanzi, pinyin) VALUES ('你好', 'nǐhǎo');
+INSERT INTO dictionary_entries(hanzi_simplified, pinyin, pinyin_numeric, pinyin_ascii) VALUES ('你好', 'nǐhǎo', 'ni3hao3', 'nihao');
 INSERT INTO translations(dictionary_entry_id, portuguese) VALUES (1, 'Olá');
 INSERT INTO translations(dictionary_entry_id, portuguese) VALUES (1, 'Tudo bem?');

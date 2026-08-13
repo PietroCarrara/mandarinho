@@ -8,7 +8,7 @@ class SearchViewModel extends ChangeNotifier {
   bool searching = false;
 
   // TODO: Thread safety
-  // Query formats: "你好", "nihao", "ni3hao3", "ni3好"
+  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer"
   void setSearch(String query, SqliteDatabase db) async {
     searching = true;
     this.query = query;

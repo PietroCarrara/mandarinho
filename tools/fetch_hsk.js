@@ -1,10 +1,12 @@
 const fs = require("fs");
 
-const hsk = 3;
+const hsk = 5;
 const pageSizes = {
   1: 150,
   2: 150,
   3: 300,
+  4: 600,
+  5: 1300,
 };
 
 (async () => {

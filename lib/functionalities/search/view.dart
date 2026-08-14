@@ -39,7 +39,7 @@ class SearchResults extends StatelessWidget {
     final searchViewModel = Provider.of<SearchViewModel>(context);
 
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
         itemCount: searchViewModel.results.length,
         padding: EdgeInsets.only(top: 8),
         itemBuilder: (context, index) {
@@ -47,6 +47,7 @@ class SearchResults extends StatelessWidget {
             dictionaryEntry: searchViewModel.results[index],
           );
         },
+        separatorBuilder: (context, index) => const Divider(),
       ),
     );
   }
@@ -71,6 +72,7 @@ class SearchInput extends StatelessWidget {
 class DictionaryEntryListItem extends StatelessWidget {
   final DictionaryEntry dictionaryEntry;
   final hanziStyle = TextStyle(fontSize: 28);
+  final pinyinStyle = TextStyle(fontSize: 16, fontWeight: FontWeight.w700);
   final grammarClassStyle = TextStyle(fontSize: 20);
 
   DictionaryEntryListItem({super.key, required this.dictionaryEntry});
@@ -78,7 +80,14 @@ class DictionaryEntryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(dictionaryEntry.hanziSimplified, style: hanziStyle),
+      title: Row(
+        spacing: 12,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(dictionaryEntry.hanziSimplified, style: hanziStyle),
+          Text(dictionaryEntry.piyin, style: pinyinStyle),
+        ],
+      ),
       subtitle: Text(
         dictionaryEntry.translations.map((tl) => tl.portuguese).join(" / "),
       ),

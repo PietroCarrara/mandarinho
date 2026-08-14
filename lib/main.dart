@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       dispose: (ctx, db) => db.close(),
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.lightGreen)),
+        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
         home: Scaffold(
           appBar: AppBar(title: Text("Mandarinho")),
           body: Padding(padding: .all(8), child: SearchView()),

@@ -9,7 +9,7 @@ INSERT INTO translations(dictionary_entry_id, portuguese_translation, grammatica
 (49, 'ligar, operar', 'verb', NULL),
 (2501, 'bater, quebrar', 'verb', NULL), -- 打
 (13, 'fazer um telefonema', 'verb', NULL), -- 打电话
-(166, 'fazer um telefonema', 'verb', NULL), -- 打篮球
+(166, 'jogar basquete', 'verb', NULL), -- 打篮球
 (120, 'pensar', 'verb', 'Usado para indicar que você está pensando sobre algo. Para expressar opiniões, use [觉得].'), -- 想
 (120, 'querer, desejar algo', 'verb', 'Se quer ser mais enfático, use [想要] ou [要].'),
 (120, 'sentir saudades', 'verb', NULL),

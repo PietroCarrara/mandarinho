@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mandarinho/core_models.dart';
 import 'package:mandarinho/functionalities/search/viewmodel.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
@@ -37,10 +38,16 @@ class SearchResults extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchViewModel = Provider.of<SearchViewModel>(context);
 
-    return Column(
-      children: [
-        for (var entry in searchViewModel.results) Text(entry.hanziSimplified),
-      ],
+    return Expanded(
+      child: ListView.builder(
+        itemCount: searchViewModel.results.length,
+        padding: EdgeInsets.only(top: 8),
+        itemBuilder: (context, index) {
+          return DictionaryEntryListItem(
+            dictionaryEntry: searchViewModel.results[index],
+          );
+        },
+      ),
     );
   }
 }
@@ -57,6 +64,31 @@ class SearchInput extends StatelessWidget {
       autofocus: true,
       decoration: InputDecoration(hintText: "Busque por português ou chinês"),
       onChanged: (value) => searchViewModel.setSearch(value, db),
+    );
+  }
+}
+
+class DictionaryEntryListItem extends StatelessWidget {
+  final DictionaryEntry dictionaryEntry;
+  final hanziStyle = TextStyle(fontSize: 28);
+  final grammarClassStyle = TextStyle(fontSize: 20);
+
+  DictionaryEntryListItem({super.key, required this.dictionaryEntry});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(dictionaryEntry.hanziSimplified, style: hanziStyle),
+      subtitle: Text(
+        dictionaryEntry.translations.map((tl) => tl.portuguese).join(" / "),
+      ),
+      trailing: Text(
+        dictionaryEntry.translations
+            .map((tl) => tl.grammaticalClass.getStylishCharacter())
+            .toSet()
+            .join("/"),
+        style: grammarClassStyle,
+      ),
     );
   }
 }

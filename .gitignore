@@ -1,4 +1,6 @@
 db/dictionary.db
+tools/*.csv
+tools/*.tsv
 
 # From here on are flutter defaults
 # Miscellaneous

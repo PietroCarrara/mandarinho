@@ -20,3 +20,7 @@ INSERT INTO translations(dictionary_entry_id, portuguese_translation, grammatica
 (200, 'quando precedido de uma suposição, indica uma conclusão (se...então...)', 'adverb', NULL), -- 就
 (200, 'indica que uma ação será feita imediatamente, ou logo após uma outra', 'adverb', NULL)
 ;
+
+INSERT INTO examples(translation_id, example_portuguese, example_hanzi_simplified, example_pinyin, example_pinyin_ascii, example_pinyin_numeric) VALUES
+(2, 'Estudar chinês', '学习中文', 'xuéxí zhōngwén', 'xuexi zhongwen', 'xue2xi2 zhong1wen2')
+;

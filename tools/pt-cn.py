@@ -44,20 +44,24 @@ def preprocess_pinyin(text, style):
     for word in words:
         # Get first reading of each word.
         # HACK: Is this correct? I don't know the order in which the lib returns them
-        pinyin = "".join(
-            list(map(lambda readings: readings[0], get_pinyin(word, style=style))))
-
-        if pinyin not in ['!', '.', '?', '?', '。', '？', '！']:
-            tone = pinyin[-1]
-            if tone not in ['1', '2', '3', '4', '5']:
-                # No tone? Then it's the neutral one
-                pinyin = pinyin + '5'
+        pinyin = "".join(list(map(lambda readings: readings[0] if style != Style.TONE3 else explicit_neutral_tone(
+            readings[0]), get_pinyin(word, style=style))))
 
         space = " " if pinyin not in [
             '!', '.', '?', '?', '。', '？', '！'] and result != "" else ""
         result += space + pinyin
 
     return result
+
+
+def explicit_neutral_tone(pinyin):
+    if pinyin not in ['!', '.', '?', '?', '。', '？', '！']:
+        tone = pinyin[-1]
+        if tone not in ['1', '2', '3', '4', '5']:
+            # No tone? Then it's the neutral one
+            return pinyin + '5'
+
+    return pinyin
 
 
 def pinyin(style):

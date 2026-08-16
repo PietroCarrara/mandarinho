@@ -15,26 +15,28 @@ class DictionaryEntry {
     required this.translations,
   });
 
-  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar", "agua", "água ", "我很喜欢学习", "我很 喜欢 学习 中文"
+  // Query formats: "你好", "nihao", "ni hao", "ni3hao3", "estudar", "eStUdAr", "agua", "água ", "我很喜欢学习", "我很 喜欢 学习 中文", "ni3好", "yidianr"/"yidianer"
   static Future<List<DictionaryEntry>> search(
     SqliteConnection db,
     String query,
   ) async {
     query = query.trim();
 
+    if (query == "") {
+      return [];
+    }
+
     final sqlResults = await db.getAll(
       """
         SELECT de.dictionary_entry_id, de.hanzi_simplified, de.pinyin, de.pinyin_numeric, de.hsk, t.portuguese_translation, t.grammatical_class
         FROM dictionary_entries de
         INNER JOIN translations t ON de.dictionary_entry_id = t.dictionary_entry_id
-        WHERE de.pinyin_ascii LIKE ? OR de.hanzi_simplified LIKE ? OR de.dictionary_entry_id IN (
-          SELECT t2.dictionary_entry_id
-          FROM translations t2
-          WHERE t2.portuguese_translation LIKE ?
-        )
+        INNER JOIN dictionary_entry_translation_fts fts ON de.dictionary_entry_id = fts.rowid
+        WHERE dictionary_entry_translation_fts MATCH ?
+        ORDER BY rank
         LIMIT 100;
       """,
-      ['%$query%', '%$query%', '%$query%'],
+      ["$query*"],
     );
 
     final List<DictionaryEntry> results = [];

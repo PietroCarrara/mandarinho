@@ -8,12 +8,6 @@ CREATE TABLE dictionary_entries (
 );
 
 
-CREATE INDEX dictionary_entries_hanzi_simplified_index ON dictionary_entries (hanzi_simplified);
-CREATE INDEX dictionary_entries_pinyin_index ON dictionary_entries (pinyin);
-CREATE INDEX dictionary_entries_pinyin_ascii_index ON dictionary_entries (pinyin_ascii);
-CREATE INDEX dictionary_entries_pinyin_numeric_index ON dictionary_entries (pinyin_numeric);
-
-
 CREATE TABLE translations (
     translation_id INTEGER PRIMARY KEY,
     dictionary_entry_id INTEGER NOT NULL,

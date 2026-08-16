@@ -47,6 +47,12 @@ def preprocess_pinyin(text, style):
         pinyin = "".join(
             list(map(lambda readings: readings[0], get_pinyin(word, style=style))))
 
+        if pinyin not in ['!', '.', '?', '?', '。', '？', '！']:
+            tone = pinyin[-1]
+            if tone not in ['1', '2', '3', '4', '5']:
+                # No tone? Then it's the neutral one
+                pinyin = pinyin + '5'
+
         space = " " if pinyin not in [
             '!', '.', '?', '?', '。', '？', '！'] and result != "" else ""
         result += space + pinyin

@@ -13,11 +13,13 @@ class DictionaryEntry {
     required this.translations,
   });
 
-  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar", "我很喜欢学习", "我很 喜欢 学习 中文"
+  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar", "agua", "água ", "我很喜欢学习", "我很 喜欢 学习 中文"
   static Future<List<DictionaryEntry>> search(
     SqliteConnection db,
     String query,
   ) async {
+    query = query.trim();
+
     final sqlResults = await db.getAll(
       """
         SELECT de.dictionary_entry_id, de.hanzi_simplified, de.pinyin, de.hsk, t.portuguese_translation, t.grammatical_class

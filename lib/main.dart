@@ -27,7 +27,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
         home: Scaffold(
           appBar: AppBar(title: Text("Mandarinho")),
-          body: Padding(padding: .all(8), child: SearchView()),
+          body: Padding(
+            padding: .symmetric(horizontal: 12, vertical: 8),
+            child: SearchView(),
+          ),
         ),
       ),
     );

@@ -13,7 +13,7 @@ class DictionaryEntry {
     required this.translations,
   });
 
-  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar"
+  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar", "我很喜欢学习", "我很 喜欢 学习 中文"
   static Future<List<DictionaryEntry>> search(
     SqliteConnection db,
     String query,

@@ -14,13 +14,13 @@ class LatestTaskRunner {
     try {
       final T data = await task();
       final bool isLatest = await _m.protectRead(() async {
-        return executionId == _currentExecutionId;
+        return executionId + 1 == _currentExecutionId;
       });
 
       return TaskResult(data: data, isLatest: isLatest);
     } catch (e) {
       final bool isLatest = await _m.protectRead(() async {
-        return executionId == _currentExecutionId;
+        return executionId + 1 == _currentExecutionId;
       });
       throw TaskException(exception: e, isLatest: isLatest);
     }

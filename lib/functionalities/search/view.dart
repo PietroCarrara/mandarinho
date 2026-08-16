@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mandarinho/async.dart';
 import 'package:mandarinho/components/Text.dart';
+import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/core_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
@@ -81,7 +82,6 @@ class SearchingMessage extends StatelessWidget {
 }
 
 class EmptyQueryMessage extends StatelessWidget {
-  // Poems + font-size
   static const List<String> poems = [
     "红豆生南国\n春来发几枝\n愿君多采撷\n此物最相思",
     "少小离家老大回\n乡音无改鬓毛衰\n儿童相见不相识\n笑问客从何处来",
@@ -189,7 +189,10 @@ class DictionaryEntryListItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(dictionaryEntry.hanziSimplified, style: hanziStyle),
-          Text(dictionaryEntry.piyin, style: pinyinStyle),
+          Pinyin(
+            pinyinNumeric: dictionaryEntry.pinyinNumeric,
+            style: pinyinStyle,
+          ),
         ],
       ),
       subtitle: Text(

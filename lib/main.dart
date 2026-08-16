@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/database.dart';
 import 'package:mandarinho/functionalities/search/view.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,18 @@ class MyApp extends StatelessWidget {
       dispose: (ctx, db) => db.close(),
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.white)),
+        theme: ThemeData(
+          colorScheme: .fromSeed(seedColor: Colors.white),
+          extensions: {
+            PinyinStyle(
+              tone1Color: Colors.red.shade800,
+              tone2Color: Colors.orange.shade800,
+              tone3Color: Colors.green.shade800,
+              tone4Color: Colors.blue.shade800,
+              tone5Color: Colors.grey.shade800,
+            ),
+          },
+        ),
         home: Scaffold(
           appBar: AppBar(title: Text("Mandarinho")),
           body: Padding(

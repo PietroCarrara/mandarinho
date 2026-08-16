@@ -3,12 +3,14 @@ import 'package:sqlite_async/sqlite_async.dart';
 class DictionaryEntry {
   final String hanziSimplified;
   final String piyin;
+  final String pinyinNumeric;
   final int? hsk;
   final List<Translation> translations;
 
   DictionaryEntry({
     required this.hanziSimplified,
     required this.piyin,
+    required this.pinyinNumeric,
     required this.hsk,
     required this.translations,
   });
@@ -22,7 +24,7 @@ class DictionaryEntry {
 
     final sqlResults = await db.getAll(
       """
-        SELECT de.dictionary_entry_id, de.hanzi_simplified, de.pinyin, de.hsk, t.portuguese_translation, t.grammatical_class
+        SELECT de.dictionary_entry_id, de.hanzi_simplified, de.pinyin, de.pinyin_numeric, de.hsk, t.portuguese_translation, t.grammatical_class
         FROM dictionary_entries de
         INNER JOIN translations t ON de.dictionary_entry_id = t.dictionary_entry_id
         WHERE de.pinyin_ascii LIKE ? OR de.hanzi_simplified LIKE ? OR de.dictionary_entry_id IN (
@@ -45,13 +47,14 @@ class DictionaryEntry {
         final entry = DictionaryEntry(
           hanziSimplified: row['hanzi_simplified'],
           piyin: row['pinyin'],
+          pinyinNumeric: row['pinyin_numeric'],
           hsk: row['hsk'],
           translations: [],
         );
         dictionaryEntries[id] = entry;
         results.add(entry);
       }
-      dictionaryEntries[id]?.translations.add(
+      dictionaryEntries[id]!.translations.add(
         Translation(
           portuguese: row['portuguese_translation'],
           grammaticalClass: GrammaticalClass.values.byName(

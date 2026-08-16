@@ -13,6 +13,7 @@ class DictionaryEntry {
     required this.translations,
   });
 
+  // Query formats: "你好", "nihao", "ni3hao3", "ni3好", "yidianr"/"yidianer", "estudar"
   static Future<List<DictionaryEntry>> search(
     SqliteConnection db,
     String query,
@@ -22,10 +23,14 @@ class DictionaryEntry {
         SELECT de.dictionary_entry_id, de.hanzi_simplified, de.pinyin, de.hsk, t.portuguese_translation, t.grammatical_class
         FROM dictionary_entries de
         INNER JOIN translations t ON de.dictionary_entry_id = t.dictionary_entry_id
-        WHERE pinyin_ascii LIKE ? OR hanzi_simplified LIKE ?
+        WHERE de.pinyin_ascii LIKE ? OR de.hanzi_simplified LIKE ? OR de.dictionary_entry_id IN (
+          SELECT t2.dictionary_entry_id
+          FROM translations t2
+          WHERE t2.portuguese_translation LIKE ?
+        )
         LIMIT 100;
       """,
-      ['%$query%', '%$query%'],
+      ['%$query%', '%$query%', '%$query%'],
     );
 
     final List<DictionaryEntry> results = [];

@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mandarinho/async.dart';
 import 'package:mandarinho/components/Text.dart';
+import 'package:mandarinho/components/hanzi.dart';
 import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/core_models.dart';
 import 'package:provider/provider.dart';
@@ -188,7 +189,11 @@ class DictionaryEntryListItem extends StatelessWidget {
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Text(dictionaryEntry.hanziSimplified, style: hanziStyle),
+          Hanzi(
+            hanzi: dictionaryEntry.hanziSimplified,
+            pinyinNumeric: dictionaryEntry.pinyinNumeric,
+            style: hanziStyle,
+          ),
           Pinyin(
             pinyinNumeric: dictionaryEntry.pinyinNumeric,
             style: pinyinStyle,

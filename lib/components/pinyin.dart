@@ -52,8 +52,6 @@ class PinyinStyle extends ThemeExtension<PinyinStyle> {
 }
 
 class Pinyin extends StatelessWidget {
-  static final regExp = RegExp(r'([a-zü]+[1-5])');
-
   final String pinyinNumeric;
   final TextStyle? style;
 
@@ -70,16 +68,9 @@ class Pinyin extends StatelessWidget {
       TextStyle(color: pinyinStyle.tone5Color),
     ];
 
-    final words = pinyinNumeric.split(" ");
-    final wordsSplitBySyllables = words
-        .map(
-          (word) =>
-              regExp.allMatches(word).map((match) => match.group(0)!).toList(),
-        )
-        .toList();
-    final wordsSplitBySyllablesTonal = wordsSplitBySyllables
-        .map((syllables) => fromNumericSyllablesToTonal(syllables))
-        .toList();
+    final wordsSplitBySyllablesTonal = PinyinWordExtensions.wordsFromNumeric(
+      pinyinNumeric,
+    );
 
     final widgets = wordsSplitBySyllablesTonal
         .expand(
@@ -94,6 +85,40 @@ class Pinyin extends StatelessWidget {
 
     return Row(children: widgets);
   }
+}
+
+typedef PinyinWord = List<PinyinSyllable>;
+
+extension PinyinWordExtensions on PinyinWord {
+  static final regExp = RegExp(r'([a-zü]+[1-5])');
+
+  static List<PinyinWord> wordsFromNumeric(String pinyinNumeric) {
+    final words = pinyinNumeric.split(" ");
+    final wordsSplitBySyllables = words
+        .map(
+          (word) =>
+              regExp.allMatches(word).map((match) => match.group(0)!).toList(),
+        )
+        .toList();
+
+    return wordsSplitBySyllables
+        .map(
+          (syllables) => PinyinSyllable.fromNumericSyllablesToTonal(syllables),
+        )
+        .toList();
+  }
+}
+
+class PinyinSyllable {
+  final String pinyinNumeric;
+  final String pinyinTonal;
+  final int tone;
+
+  PinyinSyllable({
+    required this.pinyinNumeric,
+    required this.pinyinTonal,
+    required this.tone,
+  });
 
   static List<PinyinSyllable> fromNumericSyllablesToTonal(
     List<String> numerics,
@@ -199,16 +224,4 @@ class Pinyin extends StatelessWidget {
       (_, _) => throw 'invalid pinyin',
     };
   }
-}
-
-class PinyinSyllable {
-  final String pinyinNumeric;
-  final String pinyinTonal;
-  final int tone;
-
-  PinyinSyllable({
-    required this.pinyinNumeric,
-    required this.pinyinTonal,
-    required this.tone,
-  });
 }

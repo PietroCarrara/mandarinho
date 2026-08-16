@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           extensions: {
             PinyinStyle(
               tone1Color: Colors.red.shade800,
-              tone2Color: Colors.orange.shade800,
+              tone2Color: Colors.orange.shade500,
               tone3Color: Colors.green.shade800,
               tone4Color: Colors.blue.shade800,
               tone5Color: Colors.grey.shade800,

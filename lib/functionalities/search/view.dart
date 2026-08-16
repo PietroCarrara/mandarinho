@@ -1,23 +1,27 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mandarinho/async.dart';
 import 'package:mandarinho/components/Text.dart';
 import 'package:mandarinho/core_models.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
 
 class SearchViewState extends ChangeNotifier {
+  final _taskRunner = LatestTaskRunner();
+
   String query = "";
   List<DictionaryEntry> results = [];
   // Only active for long queries
   bool loading = false;
 
-  // TODO: Thread safety
   void search(String query, SqliteDatabase db) async {
     this.query = query;
     notifyListeners();
 
-    final searchFuture = DictionaryEntry.search(db, query);
+    final searchFuture = _taskRunner.run(
+      () => DictionaryEntry.search(db, query),
+    );
     final timeoutForLoading = Future.delayed(.new(milliseconds: 35));
 
     final firstToComplete = await Future.any([searchFuture, timeoutForLoading]);
@@ -26,9 +30,12 @@ class SearchViewState extends ChangeNotifier {
       notifyListeners();
     }
 
-    results = await searchFuture;
-    loading = false;
-    notifyListeners();
+    final searchFutureResult = await searchFuture;
+    if (searchFutureResult.isLatest) {
+      results = searchFutureResult.data;
+      loading = false;
+      notifyListeners();
+    }
   }
 }
 

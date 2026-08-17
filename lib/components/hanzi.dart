@@ -35,7 +35,7 @@ class Hanzi extends StatelessWidget {
         .map((zip) => Text(zip.$1, style: toneStyles[zip.$2 - 1].merge(style)))
         .toList();
 
-    return Row(children: widgets);
+    return Wrap(children: widgets);
   }
 
   static List<(T, U)> _zip<T, U>(List<T> it1, List<U> it2) {

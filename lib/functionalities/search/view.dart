@@ -6,6 +6,7 @@ import 'package:mandarinho/components/Text.dart';
 import 'package:mandarinho/components/hanzi.dart';
 import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/core_models.dart';
+import 'package:mandarinho/functionalities/word/view.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
 
@@ -51,13 +52,19 @@ class SearchView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => SearchViewState(),
-      child: Column(
-        children: [
-          SearchInput(),
-          Expanded(child: SearchBody()),
-        ],
+    return Scaffold(
+      appBar: AppBar(title: Text("Mandarinho")),
+      body: Padding(
+        padding: .symmetric(horizontal: 12, vertical: 8),
+        child: ChangeNotifierProvider(
+          create: (context) => SearchViewState(),
+          child: Column(
+            children: [
+              SearchInput(),
+              Expanded(child: SearchBody()),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -196,6 +203,17 @@ class DictionaryEntryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () => {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (c) => WordView(
+              dictionaryEntryId: dictionaryEntry.id,
+              hanzi: dictionaryEntry.hanziSimplified,
+              pinyinNumeric: dictionaryEntry.pinyinNumeric,
+            ),
+          ),
+        ),
+      },
       title: Row(
         spacing: 12,
         crossAxisAlignment: CrossAxisAlignment.end,

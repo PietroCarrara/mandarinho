@@ -83,7 +83,7 @@ class Pinyin extends StatelessWidget {
         )
         .toList();
 
-    return Row(children: widgets);
+    return Wrap(children: widgets);
   }
 }
 

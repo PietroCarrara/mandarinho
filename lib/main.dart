@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/database.dart';
 import 'package:mandarinho/functionalities/search/view.dart';
+import 'package:mandarinho/functionalities/word/view.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
 
@@ -37,13 +38,7 @@ class MyApp extends StatelessWidget {
             ),
           },
         ),
-        home: Scaffold(
-          appBar: AppBar(title: Text("Mandarinho")),
-          body: Padding(
-            padding: .symmetric(horizontal: 12, vertical: 8),
-            child: SearchView(),
-          ),
-        ),
+        home: SearchView(),
       ),
     );
   }

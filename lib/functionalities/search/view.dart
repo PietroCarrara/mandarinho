@@ -12,10 +12,15 @@ import 'package:sqlite_async/sqlite_async.dart';
 class SearchViewState extends ChangeNotifier {
   final _taskRunner = LatestTaskRunner();
 
+  late final int poemRandomSeed;
   String query = "";
   List<DictionaryEntry> results = [];
   // Only active for long queries
   bool loading = false;
+
+  SearchViewState() {
+    poemRandomSeed = Random().nextInt(999);
+  }
 
   void search(String query, SqliteDatabase db) async {
     this.query = query;
@@ -67,7 +72,9 @@ class SearchBody extends StatelessWidget {
 
     return switch ((searchViewModel.loading, searchViewModel.query.isEmpty)) {
       (true, _) => SearchingMessage(),
-      (false, true) => EmptyQueryMessage(poemRandomSeed: Random().nextInt(999)),
+      (false, true) => EmptySearchMessage(
+        message: 'Vamos começar a estudar?\nTente buscar alguma palavra!',
+      ),
       (false, false) => SearchResults(),
     };
   }
@@ -82,27 +89,27 @@ class SearchingMessage extends StatelessWidget {
   }
 }
 
-class EmptyQueryMessage extends StatelessWidget {
+class EmptySearchMessage extends StatelessWidget {
   static const List<String> poems = [
     "红豆生南国\n春来发几枝\n愿君多采撷\n此物最相思",
     "少小离家老大回\n乡音无改鬓毛衰\n儿童相见不相识\n笑问客从何处来",
     "葡萄美酒夜光杯\n欲饮琵琶马上催\n醉卧沙场君莫笑\n古来征战几人回",
   ];
-  final int poemRandomSeed;
-  late final int index;
+  final String message;
 
-  EmptyQueryMessage({super.key, required this.poemRandomSeed}) {
-    index = poemRandomSeed % poems.length;
-  }
+  const EmptySearchMessage({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
+    final state = Provider.of<SearchViewState>(context);
+    final index = state.poemRandomSeed % poems.length;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 40,
       children: [
         Text(
-          'Vamos começar a estudar?\nTente buscar alguma palavra!',
+          message,
           style: TextStyle(fontSize: 24),
           textAlign: TextAlign.center,
         ),
@@ -138,7 +145,11 @@ class SearchResults extends StatelessWidget {
   Widget build(BuildContext context) {
     final searchViewModel = Provider.of<SearchViewState>(context);
 
-    // TODO: Show empty results scheen
+    if (searchViewModel.results.isEmpty) {
+      return EmptySearchMessage(
+        message: 'Ops! Não foi dessa vez...\nTente procurar outra palavra!',
+      );
+    }
 
     return ListView.separated(
       itemCount: searchViewModel.results.length,

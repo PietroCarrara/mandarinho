@@ -4,9 +4,10 @@ import 'package:mandarinho/components/pinyin.dart';
 class Hanzi extends StatelessWidget {
   final String hanzi;
   final String pinyinNumeric;
+  final TextStyle baseStyle = TextStyle(fontFamily: 'NotoSerifSC');
   final TextStyle? style;
 
-  const Hanzi({
+  Hanzi({
     super.key,
     required this.pinyinNumeric,
     required this.hanzi,
@@ -24,7 +25,7 @@ class Hanzi extends StatelessWidget {
       TextStyle(color: pinyinStyle.tone5Color),
     ];
 
-    final chars = hanzi.split(''); // TODO: Handle non-hanzi characters
+    final chars = hanzi.split('');
     final tones = PinyinWordExtensions.wordsFromNumeric(pinyinNumeric)
         .expand((syllables) => syllables.map((syllable) => syllable.tone))
         .toList();
@@ -43,11 +44,12 @@ class Hanzi extends StatelessWidget {
 
     return Text.rich(
       TextSpan(
+        style: baseStyle.merge(style),
         children: charactersAndTones.map((cm) {
           final (char, tone) = cm;
           return TextSpan(
             text: char,
-            style: tone != null ? toneStyles[tone - 1].merge(style) : null,
+            style: tone != null ? toneStyles[tone - 1] : null,
           );
         }).toList(),
       ),

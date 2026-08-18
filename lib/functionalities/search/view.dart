@@ -190,11 +190,7 @@ class SearchInput extends StatelessWidget {
 
 class DictionaryEntryListItem extends StatelessWidget {
   final DictionaryEntry dictionaryEntry;
-  final hanziStyle = TextStyle(
-    fontSize: 28,
-    fontFamily: 'NotoSerifSC',
-    fontWeight: .w700,
-  );
+  final hanziStyle = TextStyle(fontSize: 28, fontWeight: .w700);
   final pinyinStyle = TextStyle(fontSize: 16);
   final grammarClassStyle = TextStyle(fontSize: 20);
 

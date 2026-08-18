@@ -24,7 +24,7 @@ class WordView extends StatefulWidget {
 }
 
 class WordViewState extends State<WordView> {
-  static final hanziStyle = TextStyle(fontSize: 64, fontFamily: 'NotoSerifSC');
+  static final hanziStyle = TextStyle(fontSize: 64);
   static final pinyinStyle = TextStyle(fontSize: 20);
   bool loading = true;
   DictionaryEntry? dictionaryEntry;
@@ -48,35 +48,38 @@ class WordViewState extends State<WordView> {
       appBar: AppBar(title: Text("Mandarinho")),
       body: Padding(
         padding: .symmetric(horizontal: 12, vertical: 8),
-        child: ListView(
-          children: [
-            Center(
-              child: Hanzi(
-                pinyinNumeric: widget.pinyinNumeric,
-                hanzi: widget.hanzi,
-                style: hanziStyle,
+        child: SelectionArea(
+          child: ListView(
+            children: [
+              Center(
+                // TODO: Make the whole word selected when the user starts selecting this hanzi
+                child: Hanzi(
+                  pinyinNumeric: widget.pinyinNumeric,
+                  hanzi: widget.hanzi,
+                  style: hanziStyle,
+                ),
               ),
-            ),
-            Center(
-              child: Pinyin(
-                pinyinNumeric: widget.pinyinNumeric,
-                style: pinyinStyle,
+              Center(
+                child: Pinyin(
+                  pinyinNumeric: widget.pinyinNumeric,
+                  style: pinyinStyle,
+                ),
               ),
-            ),
-            Divider(),
-            switch (loading) {
-              true => Padding(
-                padding: .all(16.0),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-              false =>
-                dictionaryEntry != null
-                    ? WordTranslations(entry: dictionaryEntry!)
-                    : throw Exception(
-                        'Could not find DictionaryEntry.id == ${widget.dictionaryEntryId}',
-                      ),
-            },
-          ],
+              Divider(),
+              switch (loading) {
+                true => Padding(
+                  padding: .all(16.0),
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                false =>
+                  dictionaryEntry != null
+                      ? WordTranslations(entry: dictionaryEntry!)
+                      : throw Exception(
+                          'Could not find DictionaryEntry.id == ${widget.dictionaryEntryId}',
+                        ),
+              },
+            ],
+          ),
         ),
       ),
     );

@@ -25,6 +25,7 @@ class WordView extends StatefulWidget {
 
 class WordViewState extends State<WordView> {
   static final hanziStyle = TextStyle(fontSize: 64, fontFamily: 'NotoSerifSC');
+  static final pinyinStyle = TextStyle(fontSize: 20);
   bool loading = true;
   DictionaryEntry? dictionaryEntry;
 
@@ -56,7 +57,12 @@ class WordViewState extends State<WordView> {
                 style: hanziStyle,
               ),
             ),
-            Center(child: Pinyin(pinyinNumeric: widget.pinyinNumeric)),
+            Center(
+              child: Pinyin(
+                pinyinNumeric: widget.pinyinNumeric,
+                style: pinyinStyle,
+              ),
+            ),
             Divider(),
             switch (loading) {
               true => Padding(
@@ -79,58 +85,92 @@ class WordViewState extends State<WordView> {
 
 class WordTranslations extends StatelessWidget {
   final DictionaryEntry entry;
-  static final grammarClassStyle = TextStyle(fontStyle: .italic);
-  static final grammarClassChineseStyle = grammarClassStyle.copyWith(
-    fontSize: 18,
+  final numberIndicatorStyle = TextStyle(color: Colors.black54);
+  final grammarClassStyle = TextStyle(
+    color: Colors.black54,
+    fontStyle: .italic,
   );
-  static final translationStyle = TextStyle(fontSize: 18);
+  final translationStyle = TextStyle(fontSize: 20);
 
-  const WordTranslations({super.key, required this.entry});
+  WordTranslations({super.key, required this.entry});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .start,
       spacing: 12,
-      children: entry.translations
-          .map(
-            (tl) => Column(
-              crossAxisAlignment: .start,
+      children: entry.translations.indexed.map((element) {
+        final (index, tl) = element;
+        return Column(
+          crossAxisAlignment: .start,
+          children: [
+            Row(
+              textBaseline: .alphabetic,
+              crossAxisAlignment: .baseline,
+              spacing: 4,
               children: [
-                Wrap(
-                  crossAxisAlignment: .end,
-                  spacing: 8,
-                  children: [
-                    Text(
-                      tl.grammaticalClass.getStylishCharacter(),
-                      style: grammarClassChineseStyle,
-                    ),
-                    Text(
-                      tl.grammaticalClass.getPortugueseName(),
-                      style: grammarClassStyle,
-                    ),
-                  ],
+                Text("${index + 1}.", style: numberIndicatorStyle),
+                Expanded(
+                  child: Column(
+                    spacing: 4,
+                    crossAxisAlignment: .start,
+                    children: [
+                      Text(
+                        tl.grammaticalClass.getPortugueseName(),
+                        style: grammarClassStyle,
+                      ),
+                      Text(tl.portuguese, style: translationStyle),
+                      Examples(examples: tl.examples),
+                    ],
+                  ),
                 ),
-                Text(tl.portuguese, style: translationStyle),
-                Examples(examples: tl.examples),
               ],
             ),
-          )
-          .toList(),
+          ],
+        );
+      }).toList(),
     );
   }
 }
 
 class Examples extends StatelessWidget {
   final List<Example> examples;
+  final exampleHanziStyle = TextStyle(fontStyle: .italic, fontSize: 18);
+  final examplePinyinStyle = TextStyle(fontStyle: .italic, fontSize: 16);
+  final examplePortugueseStyle = TextStyle(fontStyle: .italic, fontSize: 14);
 
-  const Examples({super.key, required this.examples});
+  Examples({super.key, required this.examples});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: .start,
-      children: examples.map((e) => Text(e.portuguese)).take(2).toList(),
+      spacing: 8,
+      children: examples
+          .map(
+            (e) => Container(
+              padding: .only(left: 4),
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(color: Colors.black26, width: 2),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: .start,
+                spacing: 2,
+                children: [
+                  Text(e.hanziSimplified, style: exampleHanziStyle),
+                  Pinyin(
+                    pinyinNumeric: e.pinyinNumeric,
+                    style: examplePinyinStyle,
+                  ),
+                  Text(e.portuguese, style: examplePortugueseStyle),
+                ],
+              ),
+            ),
+          )
+          .take(2)
+          .toList(),
     );
   }
 }

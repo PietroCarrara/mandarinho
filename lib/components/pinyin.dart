@@ -73,17 +73,21 @@ class Pinyin extends StatelessWidget {
     );
 
     final widgets = wordsSplitBySyllablesTonal
-        .expand(
-          (syllables) => syllables.map(
-            ((syllable) => Text(
-              syllable.pinyinTonal,
-              style: toneStyles[syllable.tone - 1].merge(style),
-            )),
+        .map(
+          (syllables) => Wrap(
+            children: syllables
+                .map(
+                  ((syllable) => Text(
+                    syllable.pinyinTonal,
+                    style: toneStyles[syllable.tone - 1].merge(style),
+                  )),
+                )
+                .toList(),
           ),
         )
         .toList();
 
-    return Wrap(children: widgets);
+    return Wrap(spacing: 2, children: widgets);
   }
 }
 

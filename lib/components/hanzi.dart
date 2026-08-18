@@ -24,7 +24,7 @@ class Hanzi extends StatelessWidget {
       TextStyle(color: pinyinStyle.tone5Color),
     ];
 
-    final chars = hanzi.split('');
+    final chars = hanzi.split(''); // TODO: Handle non-hanzi characters
     final tones = PinyinWordExtensions.wordsFromNumeric(pinyinNumeric)
         .expand((syllables) => syllables.map((syllable) => syllable.tone))
         .toList();
@@ -35,7 +35,7 @@ class Hanzi extends StatelessWidget {
         .map((zip) => Text(zip.$1, style: toneStyles[zip.$2 - 1].merge(style)))
         .toList();
 
-    return Wrap(children: widgets);
+    return Wrap(spacing: 2, children: widgets);
   }
 
   static List<(T, U)> _zip<T, U>(List<T> it1, List<U> it2) {

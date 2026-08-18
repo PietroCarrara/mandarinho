@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mandarinho/components/pinyin.dart';
 import 'package:mandarinho/database.dart';
 import 'package:mandarinho/functionalities/search/view.dart';
-import 'package:mandarinho/functionalities/word/view.dart';
 import 'package:provider/provider.dart';
 import 'package:sqlite_async/sqlite_async.dart';
 

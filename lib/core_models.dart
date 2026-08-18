@@ -133,7 +133,7 @@ class Translation {
       """
         SELECT t.translation_id, t.portuguese_translation, t.grammatical_class, e.example_portuguese, e.example_hanzi_simplified, e.example_pinyin_numeric
         FROM translations t
-        INNER JOIN examples e ON t.translation_id = e.translation_id
+        LEFT JOIN examples e ON t.translation_id = e.translation_id
         WHERE t.dictionary_entry_id = ?;
       """,
       [dictionaryEntryId],
@@ -150,7 +150,9 @@ class Translation {
         translations[id] = translation;
         results.add(translation);
       }
-      translations[id]!.examples.add(Example.fromRow(row));
+      if (row['example_portuguese'] != null) {
+        translations[id]!.examples.add(Example.fromRow(row));
+      }
     }
 
     return results;

@@ -29,20 +29,28 @@ class Hanzi extends StatelessWidget {
         .expand((syllables) => syllables.map((syllable) => syllable.tone))
         .toList();
 
-    final zipped = _zip(chars, tones);
+    final List<(String, int?)> charactersAndTones = [];
+    final nonHanziChars = RegExp(r"[ .!,?()。！，？（）]");
+    var toneCounter = 0;
+    for (final char in chars) {
+      if (nonHanziChars.hasMatch(char)) {
+        charactersAndTones.add((char, null));
+      } else {
+        charactersAndTones.add((char, tones[toneCounter]));
+        toneCounter++;
+      }
+    }
 
-    final widgets = zipped
-        .map((zip) => Text(zip.$1, style: toneStyles[zip.$2 - 1].merge(style)))
-        .toList();
-
-    return Wrap(spacing: 2, children: widgets);
-  }
-
-  static List<(T, U)> _zip<T, U>(List<T> it1, List<U> it2) {
-    assert(it1.length == it2.length);
-
-    return List.generate(it1.length, (i) {
-      return (it1[i], it2[i]);
-    });
+    return Text.rich(
+      TextSpan(
+        children: charactersAndTones.map((cm) {
+          final (char, tone) = cm;
+          return TextSpan(
+            text: char,
+            style: tone != null ? toneStyles[tone - 1].merge(style) : null,
+          );
+        }).toList(),
+      ),
+    );
   }
 }

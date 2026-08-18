@@ -112,7 +112,6 @@ class WordTranslations extends StatelessWidget {
                 Text("${index + 1}.", style: numberIndicatorStyle),
                 Expanded(
                   child: Column(
-                    spacing: 4,
                     crossAxisAlignment: .start,
                     children: [
                       Text(
@@ -135,8 +134,8 @@ class WordTranslations extends StatelessWidget {
 
 class Examples extends StatelessWidget {
   final List<Example> examples;
-  final exampleHanziStyle = TextStyle(fontStyle: .italic, fontSize: 18);
-  final examplePinyinStyle = TextStyle(fontStyle: .italic, fontSize: 16);
+  final exampleHanziStyle = TextStyle(fontStyle: .italic, fontSize: 16);
+  final examplePinyinStyle = TextStyle(fontStyle: .italic, fontSize: 14);
   final examplePortugueseStyle = TextStyle(fontStyle: .italic, fontSize: 14);
 
   Examples({super.key, required this.examples});
@@ -159,7 +158,11 @@ class Examples extends StatelessWidget {
                 crossAxisAlignment: .start,
                 spacing: 2,
                 children: [
-                  Text(e.hanziSimplified, style: exampleHanziStyle),
+                  Hanzi(
+                    hanzi: e.hanziSimplified,
+                    pinyinNumeric: e.pinyinNumeric,
+                    style: exampleHanziStyle,
+                  ),
                   Pinyin(
                     pinyinNumeric: e.pinyinNumeric,
                     style: examplePinyinStyle,

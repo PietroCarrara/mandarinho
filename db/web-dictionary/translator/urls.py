@@ -6,5 +6,6 @@ app_name = "translator"
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("create/", views.create, name="create"),
     path("<int:entry_id>/edit/", views.edit, name="edit"),
 ]

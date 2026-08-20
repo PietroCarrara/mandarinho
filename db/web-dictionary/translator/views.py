@@ -2,10 +2,12 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import (
+    CreateExampleFormSet,
+    CreateTranslationFormSet,
     DictionaryEntryForm,
-    ExampleFormSet,
+    EditExampleFormSet,
+    EditTranslationFormSet,
     TranslationForm,
-    TranslationFormSet,
 )
 from .models import DictionaryEntry
 
@@ -15,19 +17,21 @@ def index(request):
     return render(request, "translator/index.html", {"entries": entries})
 
 
-def edit(request, entry_id):
-    entry = get_object_or_404(
-        DictionaryEntry.objects.prefetch_related("translation_set__example_set"),
-        pk=entry_id,
+def _entry_form_view(request, entry, template_name, *, is_create):
+    translation_formset_class = (
+        CreateTranslationFormSet if is_create else EditTranslationFormSet
+    )
+    example_formset_class = (
+        CreateExampleFormSet if is_create else EditExampleFormSet
     )
     entry_form = DictionaryEntryForm(request.POST or None, instance=entry)
-    translation_formset = TranslationFormSet(
+    translation_formset = translation_formset_class(
         request.POST or None, instance=entry, prefix="translations"
     )
 
     example_formsets = []
     for index, translation_form in enumerate(translation_formset.forms):
-        example_formset = ExampleFormSet(
+        example_formset = example_formset_class(
             request.POST or None,
             instance=translation_form.instance,
             prefix=f"examples-{index}",
@@ -39,7 +43,7 @@ def edit(request, entry_id):
         entry_is_valid = entry_form.is_valid()
         translations_are_valid = translation_formset.is_valid()
         examples_are_valid = all(
-            formset.is_valid() for formset in example_formsets
+            [formset.is_valid() for formset in example_formsets]
         )
         if entry_is_valid and translations_are_valid and examples_are_valid:
             with transaction.atomic():
@@ -62,14 +66,14 @@ def edit(request, entry_id):
     empty_translation_form = TranslationForm(
         prefix="translations-__translation_prefix__"
     )
-    empty_example_formset = ExampleFormSet(
+    empty_example_formset = CreateExampleFormSet(
         instance=empty_translation_form.instance,
         prefix="examples-__translation_prefix__",
     )
 
     return render(
         request,
-        "translator/edit.html",
+        template_name,
         {
             "entry": entry,
             "entry_form": entry_form,
@@ -77,4 +81,20 @@ def edit(request, entry_id):
             "empty_translation_form": empty_translation_form,
             "empty_example_formset": empty_example_formset,
         },
+    )
+
+
+def create(request):
+    return _entry_form_view(
+        request, DictionaryEntry(), "translator/create.html", is_create=True
+    )
+
+
+def edit(request, entry_id):
+    entry = get_object_or_404(
+        DictionaryEntry.objects.prefetch_related("translation_set__example_set"),
+        pk=entry_id,
+    )
+    return _entry_form_view(
+        request, entry, "translator/edit.html", is_create=False
     )

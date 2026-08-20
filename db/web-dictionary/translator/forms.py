@@ -35,10 +35,18 @@ class ExampleForm(forms.ModelForm):
         fields = ["hanzi_simplified", "portuguese"]
 
 
-TranslationFormSet = inlineformset_factory(
+CreateTranslationFormSet = inlineformset_factory(
     DictionaryEntry, Translation, form=TranslationForm, extra=1, can_delete=False
 )
 
-ExampleFormSet = inlineformset_factory(
+EditTranslationFormSet = inlineformset_factory(
+    DictionaryEntry, Translation, form=TranslationForm, extra=0, can_delete=False
+)
+
+CreateExampleFormSet = inlineformset_factory(
     Translation, Example, form=ExampleForm, extra=2, can_delete=False
+)
+
+EditExampleFormSet = inlineformset_factory(
+    Translation, Example, form=ExampleForm, extra=0, can_delete=False
 )

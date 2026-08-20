@@ -1,0 +1,94 @@
+<form method="post">
+  {% csrf_token %}
+  {{ entry_form.as_p }}
+
+  <h2>Translations</h2>
+  {{ translation_formset.management_form }}
+  {{ translation_formset.non_form_errors }}
+
+  <div id="translations">
+    {% for translation_form in translation_formset %}
+      <fieldset class="translation-form">
+        <legend>Translation</legend>
+        {{ translation_form.non_field_errors }}
+        {{ translation_form.as_p }}
+
+        <h3>Examples</h3>
+        {{ translation_form.example_formset.management_form }}
+        {{ translation_form.example_formset.non_form_errors }}
+        <div class="examples" data-prefix="{{ translation_form.example_formset.prefix }}">
+          {% for example_form in translation_form.example_formset %}
+            <div class="example-form">
+              {{ example_form.non_field_errors }}
+              {{ example_form.as_p }}
+            </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="add-example">Add example</button>
+
+        <template class="example-template">
+          <div class="example-form">
+            {{ translation_form.example_formset.empty_form.as_p }}
+          </div>
+        </template>
+      </fieldset>
+    {% endfor %}
+  </div>
+
+  <button type="button" id="add-translation">Add translation</button>
+  <button type="submit">Save</button>
+</form>
+
+<template id="translation-template">
+  <fieldset class="translation-form">
+    <legend>Translation</legend>
+    {{ empty_translation_form.as_p }}
+
+    <h3>Examples</h3>
+    {{ empty_example_formset.management_form }}
+    <div class="examples" data-prefix="{{ empty_example_formset.prefix }}">
+      {% for example_form in empty_example_formset %}
+        <div class="example-form">
+          {{ example_form.as_p }}
+        </div>
+      {% endfor %}
+    </div>
+    <button type="button" class="add-example">Add example</button>
+
+    <template class="example-template">
+      <div class="example-form">
+        {{ empty_example_formset.empty_form.as_p }}
+      </div>
+    </template>
+  </fieldset>
+</template>
+
+<script>
+  document.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("add-example")) return;
+
+    const translation = event.target.closest(".translation-form");
+    const examples = translation.querySelector(".examples");
+    const prefix = examples.dataset.prefix;
+    const totalInput = translation.querySelector(
+      `input[name="${prefix}-TOTAL_FORMS"]`
+    );
+    const index = Number(totalInput.value);
+    const template = translation.querySelector(".example-template");
+    examples.insertAdjacentHTML(
+      "beforeend",
+      template.innerHTML.replaceAll("__prefix__", index)
+    );
+    totalInput.value = index + 1;
+  });
+
+  document.querySelector("#add-translation").addEventListener("click", () => {
+    const totalInput = document.querySelector("#id_translations-TOTAL_FORMS");
+    const index = Number(totalInput.value);
+    const html = document
+      .querySelector("#translation-template")
+      .innerHTML.replaceAll("__translation_prefix__", index);
+    document.querySelector("#translations").insertAdjacentHTML("beforeend", html);
+    totalInput.value = index + 1;
+  });
+</script>

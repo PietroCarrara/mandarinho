@@ -4,6 +4,7 @@
 
 {% block content %}
   <h1>Dictionary</h1>
+  <p><a href="{% url 'translator:create' %}">Create entry</a></p>
 
   {% if entries %}
     <ul>

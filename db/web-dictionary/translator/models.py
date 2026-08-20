@@ -28,3 +28,4 @@ class Example(models.Model):
     id = models.AutoField(primary_key=True)
     portuguese = models.TextField()
     hanzi_simplified = models.TextField()
+    pinyin = models.TextField()

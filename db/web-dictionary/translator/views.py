@@ -1,12 +1,16 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 
+from translator.pinyin import compute_pinyin
+
 from .forms import (
     CreateExampleFormSet,
     CreateTranslationFormSet,
-    DictionaryEntryForm,
+    CreateDictionaryEntryForm,
+    EditDictionaryEntryForm,
     EditExampleFormSet,
     EditTranslationFormSet,
+    NewEditExampleFormSet,
     TranslationForm,
 )
 from .models import DictionaryEntry
@@ -24,7 +28,13 @@ def _entry_form_view(request, entry, template_name, *, is_create):
     example_formset_class = (
         CreateExampleFormSet if is_create else EditExampleFormSet
     )
-    entry_form = DictionaryEntryForm(request.POST or None, instance=entry)
+    new_example_formset_class = (
+        CreateExampleFormSet if is_create else NewEditExampleFormSet
+    )
+    entry_form_class = (
+        CreateDictionaryEntryForm if is_create else EditDictionaryEntryForm
+    )
+    entry_form = entry_form_class(request.POST or None, instance=entry)
     translation_formset = translation_formset_class(
         request.POST or None, instance=entry, prefix="translations"
     )
@@ -47,7 +57,11 @@ def _entry_form_view(request, entry, template_name, *, is_create):
         )
         if entry_is_valid and translations_are_valid and examples_are_valid:
             with transaction.atomic():
-                entry = entry_form.save()
+                entry = entry_form.save(commit=False)
+                if is_create:
+                    entry.pinyin_numeric = compute_pinyin(
+                        entry.simplified_hanzi)
+                entry.save()
                 for translation_form, example_formset in zip(
                     translation_formset.forms, example_formsets
                 ):
@@ -60,13 +74,20 @@ def _entry_form_view(request, entry, template_name, *, is_create):
                     translation.entry = entry
                     translation.save()
                     example_formset.instance = translation
-                    example_formset.save()
+                    examples = example_formset.save(commit=False)
+                    for example in examples:
+                        example.entry = translation
+                        if is_create:
+                            example.pinyin = compute_pinyin(
+                                example.hanzi_simplified
+                            )
+                        example.save()
             return redirect("translator:edit", entry_id=entry.pk)
 
     empty_translation_form = TranslationForm(
         prefix="translations-__translation_prefix__"
     )
-    empty_example_formset = CreateExampleFormSet(
+    empty_example_formset = new_example_formset_class(
         instance=empty_translation_form.instance,
         prefix="examples-__translation_prefix__",
     )
@@ -92,7 +113,8 @@ def create(request):
 
 def edit(request, entry_id):
     entry = get_object_or_404(
-        DictionaryEntry.objects.prefetch_related("translation_set__example_set"),
+        DictionaryEntry.objects.prefetch_related(
+            "translation_set__example_set"),
         pk=entry_id,
     )
     return _entry_form_view(

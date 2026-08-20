@@ -17,7 +17,7 @@ class Translation(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(part_of_speech__in=[
-                                   'verb', 'noun', 'adjective', 'adverb', 'particle', 'expression', 'number']),
+                                   'verb', 'noun', 'adjective', 'adverb', 'particle', 'expression', 'number', 'classifier']),
                 name='part_of_speech_must_be_in_allowed_list',
             )
         ]

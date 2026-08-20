@@ -13,10 +13,17 @@ PARTS_OF_SPEECH = [
     ("particle", "Particle"),
     ("expression", "Expression"),
     ("number", "Number"),
+    ("classifier", "Classifier"),
 ]
 
 
-class DictionaryEntryForm(forms.ModelForm):
+class CreateDictionaryEntryForm(forms.ModelForm):
+    class Meta:
+        model = DictionaryEntry
+        fields = ["simplified_hanzi"]
+
+
+class EditDictionaryEntryForm(forms.ModelForm):
     class Meta:
         model = DictionaryEntry
         fields = ["simplified_hanzi", "pinyin_numeric"]
@@ -29,10 +36,16 @@ class TranslationForm(forms.ModelForm):
         widgets = {"part_of_speech": forms.Select(choices=PARTS_OF_SPEECH)}
 
 
-class ExampleForm(forms.ModelForm):
+class CreateExampleForm(forms.ModelForm):
     class Meta:
         model = Example
         fields = ["hanzi_simplified", "portuguese"]
+
+
+class EditExampleForm(forms.ModelForm):
+    class Meta:
+        model = Example
+        fields = ["hanzi_simplified", "pinyin", "portuguese"]
 
 
 CreateTranslationFormSet = inlineformset_factory(
@@ -44,9 +57,13 @@ EditTranslationFormSet = inlineformset_factory(
 )
 
 CreateExampleFormSet = inlineformset_factory(
-    Translation, Example, form=ExampleForm, extra=2, can_delete=False
+    Translation, Example, form=CreateExampleForm, extra=2, can_delete=False
 )
 
 EditExampleFormSet = inlineformset_factory(
-    Translation, Example, form=ExampleForm, extra=0, can_delete=False
+    Translation, Example, form=EditExampleForm, extra=0, can_delete=False
+)
+
+NewEditExampleFormSet = inlineformset_factory(
+    Translation, Example, form=EditExampleForm, extra=2, can_delete=False
 )

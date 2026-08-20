@@ -12,7 +12,7 @@ CREATE TABLE translations (
     translation_id INTEGER PRIMARY KEY NOT NULL,
     dictionary_entry_id INTEGER NOT NULL,
     portuguese_translation TEXT NOT NULL,
-    grammatical_class TEXT NOT NULL CHECK(grammatical_class in ('verb', 'noun', 'adjective', 'adverb', 'particle', 'expression')),
+    grammatical_class TEXT NOT NULL CHECK(grammatical_class in ('verb', 'noun', 'adjective', 'adverb', 'particle', 'expression', 'number')),
     usage_notes TEXT,
     FOREIGN KEY(dictionary_entry_id) REFERENCES dictionary_entries(dictionary_entry_id)
 );

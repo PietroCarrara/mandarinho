@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Dictionary | Mandarinho{% endblock %}
+
+{% block content %}
+  <h1>Dictionary</h1>
+
+  {% if entries %}
+    <ul>
+      {% for entry in entries %}
+        <li>
+          <a href="{% url 'translator:edit' entry.id %}">
+            {{ entry.simplified_hanzi }} — {{ entry.pinyin_numeric }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No dictionary entries yet.</p>
+  {% endif %}
+{% endblock %}

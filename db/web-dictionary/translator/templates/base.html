@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}mandarinho.com.br{% endblock %}</title>
+  </head>
+  <body>
+    <!-- Global Header -->
+    <header>
+      <nav>
+        <a href="/">Home</a> |
+        <a href="/about/">About</a>
+      </nav>
+    </header>
+
+    <!-- Unique Page Content Placeholder -->
+    <main>
+      {% block content %}
+      <!-- Dynamic content goes here -->
+      {% endblock %}
+    </main>
+
+    <!-- Global Footer -->
+    <footer>
+      {% block footer %}
+      <p>&copy; 2026 Mandarinho</p>
+      {% endblock %}
+    </footer>
+  </body>
+</html>

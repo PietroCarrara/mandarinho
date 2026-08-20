@@ -1,5 +1,5 @@
 CREATE TABLE dictionary_entries (
-    dictionary_entry_id INTEGER PRIMARY KEY,
+    dictionary_entry_id INTEGER PRIMARY KEY NOT NULL,
     hanzi_simplified TEXT NOT NULL,
     pinyin TEXT NOT NULL,
     pinyin_ascii TEXT NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE dictionary_entries (
 
 
 CREATE TABLE translations (
-    translation_id INTEGER PRIMARY KEY,
+    translation_id INTEGER PRIMARY KEY NOT NULL,
     dictionary_entry_id INTEGER NOT NULL,
     portuguese_translation TEXT NOT NULL,
     grammatical_class TEXT NOT NULL CHECK(grammatical_class in ('verb', 'noun', 'adjective', 'adverb', 'particle', 'expression')),
@@ -21,7 +21,7 @@ CREATE INDEX translations_portuguese_translation_index ON translations (portugue
 
 
 CREATE TABLE examples (
-    example_id INTEGER PRIMARY KEY,
+    example_id INTEGER PRIMARY KEY NOT NULL,
     translation_id INTEGER NOT NULL,
     example_portuguese TEXT NOT NULL,
     example_hanzi_simplified TEXT NOT NULL,

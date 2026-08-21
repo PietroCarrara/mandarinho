@@ -28,6 +28,10 @@ class EditDictionaryEntryForm(forms.ModelForm):
         model = DictionaryEntry
         fields = ["simplified_hanzi", "pinyin_numeric"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["pinyin_numeric"].required = False
+
 
 class TranslationForm(forms.ModelForm):
     class Meta:
@@ -46,6 +50,10 @@ class EditExampleForm(forms.ModelForm):
     class Meta:
         model = Example
         fields = ["hanzi_simplified", "pinyin", "portuguese"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["pinyin"].required = False
 
 
 CreateTranslationFormSet = inlineformset_factory(

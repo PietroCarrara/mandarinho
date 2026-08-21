@@ -58,7 +58,7 @@ def _entry_form_view(request, entry, template_name, *, is_create):
         if entry_is_valid and translations_are_valid and examples_are_valid:
             with transaction.atomic():
                 entry = entry_form.save(commit=False)
-                if is_create:
+                if not entry.pinyin_numeric.strip():
                     entry.pinyin_numeric = compute_pinyin(
                         entry.simplified_hanzi)
                 entry.save()
@@ -73,11 +73,15 @@ def _entry_form_view(request, entry, template_name, *, is_create):
                     translation = translation_form.save(commit=False)
                     translation.entry = entry
                     translation.save()
-                    example_formset.instance = translation
-                    examples = example_formset.save(commit=False)
-                    for example in examples:
+                    for example_form in example_formset.forms:
+                        if (
+                            not example_form.instance.pk
+                            and not example_form.has_changed()
+                        ):
+                            continue
+                        example = example_form.save(commit=False)
                         example.entry = translation
-                        if is_create:
+                        if not example.pinyin.strip():
                             example.pinyin = compute_pinyin(
                                 example.hanzi_simplified
                             )

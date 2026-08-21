@@ -12,6 +12,7 @@ class Translation(models.Model):
     id = models.AutoField(primary_key=True)
     portuguese = models.TextField()
     part_of_speech = models.TextField()
+    translation_notes = models.TextField(null=True)
 
     class Meta:
         constraints = [

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from unittest.mock import patch
 
 from .models import DictionaryEntry, Example, Translation
 
@@ -64,6 +65,7 @@ class EditViewTests(TestCase):
                 "translations-MAX_NUM_FORMS": "1000",
                 "translations-0-portuguese": "olá",
                 "translations-0-part_of_speech": "expression",
+                "translations-0-translation_notes": "Formal greeting.",
                 "examples-0-TOTAL_FORMS": "3",
                 "examples-0-INITIAL_FORMS": "0",
                 "examples-0-MIN_NUM_FORMS": "0",
@@ -87,7 +89,56 @@ class EditViewTests(TestCase):
         self.assertEqual(self.entry.simplified_hanzi, "您好")
         translation = Translation.objects.get(entry=self.entry)
         self.assertEqual(translation.portuguese, "olá")
+        self.assertEqual(translation.translation_notes, "Formal greeting.")
         self.assertEqual(Example.objects.filter(entry=translation).count(), 2)
+
+    @patch("translator.views.compute_pinyin", side_effect=lambda text: f"pinyin:{text}")
+    def test_post_computes_empty_entry_and_example_pinyin(self, compute_pinyin):
+        self.entry.pinyin_numeric = ""
+        self.entry.save()
+        translation = Translation.objects.create(
+            entry=self.entry,
+            portuguese="olá",
+            part_of_speech="expression",
+        )
+        example = Example.objects.create(
+            entry=translation,
+            hanzi_simplified="你好！",
+            pinyin="",
+            portuguese="Olá!",
+        )
+
+        response = self.client.post(
+            reverse("translator:edit", args=[self.entry.pk]),
+            {
+                "simplified_hanzi": "你好",
+                "pinyin_numeric": "",
+                "translations-TOTAL_FORMS": "1",
+                "translations-INITIAL_FORMS": "1",
+                "translations-MIN_NUM_FORMS": "0",
+                "translations-MAX_NUM_FORMS": "1000",
+                "translations-0-id": str(translation.pk),
+                "translations-0-portuguese": "olá",
+                "translations-0-part_of_speech": "expression",
+                "examples-0-TOTAL_FORMS": "1",
+                "examples-0-INITIAL_FORMS": "1",
+                "examples-0-MIN_NUM_FORMS": "0",
+                "examples-0-MAX_NUM_FORMS": "1000",
+                "examples-0-0-id": str(example.pk),
+                "examples-0-0-hanzi_simplified": "你好！",
+                "examples-0-0-pinyin": "",
+                "examples-0-0-portuguese": "Olá!",
+            },
+        )
+
+        self.assertRedirects(
+            response, reverse("translator:edit", args=[self.entry.pk])
+        )
+        self.entry.refresh_from_db()
+        example.refresh_from_db()
+        self.assertEqual(self.entry.pinyin_numeric, "pinyin:你好")
+        self.assertEqual(example.pinyin, "pinyin:你好！")
+        self.assertEqual(compute_pinyin.call_count, 2)
 
 
 class CreateViewTests(TestCase):
@@ -105,7 +156,8 @@ class CreateViewTests(TestCase):
             "pinyin", translation_formset.forms[0].example_formset.forms[0].fields
         )
 
-    def test_post_creates_entry_translation_and_example(self):
+    @patch("translator.views.compute_pinyin", side_effect=lambda text: f"pinyin:{text}")
+    def test_post_creates_entry_translation_and_example(self, compute_pinyin):
         response = self.client.post(
             reverse("translator:create"),
             {
@@ -132,8 +184,11 @@ class CreateViewTests(TestCase):
         self.assertRedirects(
             response, reverse("translator:edit", args=[entry.pk])
         )
-        self.assertEqual(entry.pinyin_numeric, "")
+        self.assertEqual(entry.pinyin_numeric, "pinyin:谢谢")
         translation = Translation.objects.get(entry=entry)
         self.assertEqual(translation.portuguese, "obrigado")
         self.assertEqual(Example.objects.filter(entry=translation).count(), 1)
-        self.assertEqual(Example.objects.get(entry=translation).pinyin, "")
+        self.assertEqual(
+            Example.objects.get(entry=translation).pinyin, "pinyin:谢谢你。"
+        )
+        self.assertEqual(compute_pinyin.call_count, 2)

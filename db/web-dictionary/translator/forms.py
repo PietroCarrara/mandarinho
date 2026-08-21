@@ -36,8 +36,12 @@ class EditDictionaryEntryForm(forms.ModelForm):
 class TranslationForm(forms.ModelForm):
     class Meta:
         model = Translation
-        fields = ["portuguese", "part_of_speech"]
+        fields = ["portuguese", "part_of_speech", "translation_notes"]
         widgets = {"part_of_speech": forms.Select(choices=PARTS_OF_SPEECH)}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["translation_notes"].required = False
 
 
 class CreateExampleForm(forms.ModelForm):

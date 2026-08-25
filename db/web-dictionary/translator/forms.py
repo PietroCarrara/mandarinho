@@ -20,17 +20,22 @@ PARTS_OF_SPEECH = [
 class CreateDictionaryEntryForm(forms.ModelForm):
     class Meta:
         model = DictionaryEntry
-        fields = ["simplified_hanzi"]
+        fields = ["simplified_hanzi", "hsk"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["hsk"].required = False
 
 
 class EditDictionaryEntryForm(forms.ModelForm):
     class Meta:
         model = DictionaryEntry
-        fields = ["simplified_hanzi", "pinyin_numeric"]
+        fields = ["simplified_hanzi", "pinyin_numeric", "hsk"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["pinyin_numeric"].required = False
+        self.fields["hsk"].required = False
 
 
 class TranslationForm(forms.ModelForm):

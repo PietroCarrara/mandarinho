@@ -5,6 +5,7 @@ class DictionaryEntry(models.Model):
     id = models.AutoField(primary_key=True)
     simplified_hanzi = models.TextField()
     pinyin_numeric = models.TextField()
+    hsk = models.IntegerField(null=True)
 
 
 class Translation(models.Model):

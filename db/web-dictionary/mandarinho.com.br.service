@@ -1,0 +1,17 @@
+[Unit]
+Description=Granian HTTP Server for mandarinho.com.br
+After=network.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+WorkingDirectory=/root/mandarinho/db/web-dictionary
+ExecStart=/root/mandarinho/db/web-dictionary/.venv/bin/granian config.wsgi:application --interface wsgi --port 8888
+Restart=always
+RestartSec=5
+KillMode=mixed
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

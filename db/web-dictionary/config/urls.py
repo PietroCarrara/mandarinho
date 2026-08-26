@@ -18,6 +18,6 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('管理/', admin.site.urls),  # Stupid way to hide admin panel
     path('translator/', include("translator.urls"))
 ]

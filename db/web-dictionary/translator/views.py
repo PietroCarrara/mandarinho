@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.admin.views.decorators import staff_member_required
 
 from translator.pinyin import compute_pinyin
 
@@ -16,6 +17,7 @@ from .forms import (
 from .models import DictionaryEntry
 
 
+@staff_member_required
 def index(request):
     entries = DictionaryEntry.objects.order_by("simplified_hanzi")
     return render(request, "translator/index.html", {"entries": entries})
@@ -109,12 +111,14 @@ def _entry_form_view(request, entry, template_name, *, is_create):
     )
 
 
+@staff_member_required
 def create(request):
     return _entry_form_view(
         request, DictionaryEntry(), "translator/create.html", is_create=True
     )
 
 
+@staff_member_required
 def edit(request, entry_id):
     entry = get_object_or_404(
         DictionaryEntry.objects.prefetch_related(

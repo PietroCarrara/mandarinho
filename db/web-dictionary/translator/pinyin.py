@@ -25,8 +25,8 @@ def compute_pinyin(text):
         pinyin_parts = list(map(space_for_edge_case, enumerate(pinyin_parts)))
 
         pinyin_numeric = "".join(pinyin_parts)
-        space = " " if pinyin_numeric not in [
-            '!', '.', '?', '?', ','] and result != "" else ""
+        space = " " if result != "" and pinyin_numeric not in [
+            '!', '.', '?', '?', ',', ')'] and result[-1] not in ['('] else ""
         result += space + pinyin_numeric
 
     return result
@@ -35,7 +35,7 @@ def compute_pinyin(text):
 def space_for_edge_case(index_and_pinyin_part):
     index, pinyin_part = index_and_pinyin_part
     # No tonal mark? Foreign word!
-    if pinyin_part not in ['!', '.', '?', ';', ',', ':'] and pinyin_part[-1] not in ['1', '2', '3', '4', '5']:
+    if pinyin_part not in ['!', '.', '?', ';', ',', ':', '(', ')', '"'] and pinyin_part[-1] not in ['1', '2', '3', '4', '5']:
         if index == 0:
             return pinyin_part + " "
         else:
@@ -45,4 +45,17 @@ def space_for_edge_case(index_and_pinyin_part):
 
 
 def monospace_to_ascii(string: str):
-    return string.replace("！", "!").replace("。", ".").replace("？", "?").replace("；", ";").replace("，", ",").replace("、", ",").replace("：", ":")
+    return string.replace("！", "!")\
+                 .replace("。", ".")\
+                 .replace("？", "?")\
+                 .replace("；", ";")\
+                 .replace("，", ",")\
+                 .replace("、", ",")\
+                 .replace("：", ":")\
+                 .replace("（", "(")\
+                 .replace("）", ")")\
+                 .replace("“", '"')\
+                 .replace("”", '"')
+
+
+compute_pinyin("（兴奋）你和我们一起来吧！（不开心）好吧")

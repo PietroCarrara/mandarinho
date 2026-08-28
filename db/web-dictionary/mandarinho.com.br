@@ -1,18 +1,11 @@
 server {
     server_name mandarinho.com.br www.mandarinho.com.br;
 
-    return 301 https://$host$request_uri;
-
     listen 443 ssl; # managed by Certbot
     ssl_certificate /etc/letsencrypt/live/mandarinho.com.br/fullchain.pem; # managed by Certbot
     ssl_certificate_key /etc/letsencrypt/live/mandarinho.com.br/privkey.pem; # managed by Certbot
     include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
-}
-
-server {
-    listen 443;
-    server_name mandarinho.com.br www.mandarinho.com.br;
 
     location / {
         proxy_pass http://localhost:8888;
@@ -24,12 +17,12 @@ server {
 }
 
 server {
+    server_name mandarinho.com.br www.mandarinho.com.br;
+    listen 80;
     if ($host = mandarinho.com.br) {
         return 301 https://$host$request_uri;
     } # managed by Certbot
 
 
-    listen 80;
-    server_name mandarinho.com.br www.mandarinho.com.br;
     return 404; # managed by Certbot
 }

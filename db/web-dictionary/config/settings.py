@@ -141,4 +141,4 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 DEBUG = False
 ALLOWED_HOSTS = ["mandarinho.com.br"]
-STATIC_ROOT = '/root/mandarinho/db/web-dictionary/static/'
+STATIC_ROOT = '/var/www/mandarinho/static'

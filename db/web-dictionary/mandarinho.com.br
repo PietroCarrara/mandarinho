@@ -1,6 +1,14 @@
 server {
     server_name mandarinho.com.br www.mandarinho.com.br;
 
+    location /static/ {
+        root /root/mandarinho/db/web-dictionary/static/;
+        # 1. Core performance optimizations for file delivery
+        sendfile on;
+        sendfile_max_chunk 1m;
+        tcp_nopush on;
+    }
+
     location / {
         proxy_pass http://localhost:8888;
         proxy_set_header Host $host;

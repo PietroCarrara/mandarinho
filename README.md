@@ -1,17 +1,15 @@
 # mandarinho
 
-A new Flutter project.
+A CN-PT_BR mobile dictionary. Has also a web interface for database management (creation, editing, ...)
 
-## Getting Started
+## Mobile App Screenshots
 
-This project is a starting point for a Flutter application.
+| main                          | search                          | entry                          |
+| ----------------------------- | ------------------------------- | ------------------------------ |
+| ![](./readme-images/main.jpg) | ![](./readme-images/search.jpg) | ![](./readme-images/entry.jpg) |
 
-A few resources to get you started if this is your first Flutter project:
+## Webui Screenshots
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+On the webui, we automatically generate pinyin for the entries. They can be edited, of course, as sometimes it'll guess the wrong variation of a word.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![](./readme-images/edit.png)

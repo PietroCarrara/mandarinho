@@ -1,4 +1,4 @@
-<form method="post">
+<form method="post" class="vstack gap-3">
   {% csrf_token %}
   {{ entry_form.as_p }}
 
@@ -8,7 +8,7 @@
 
   <div id="translations">
     {% for translation_form in translation_formset %}
-      <fieldset class="translation-form">
+      <fieldset class="translation-form border rounded p-3">
         <legend>Translation</legend>
         {{ translation_form.non_field_errors }}
         {{ translation_form.as_p }}
@@ -24,7 +24,7 @@
             </div>
           {% endfor %}
         </div>
-        <button type="button" class="add-example">Add example</button>
+        <button type="button" class="add-example btn btn-outline-secondary btn-sm">Add example</button>
 
         <template class="example-template">
           <div class="example-form">
@@ -35,12 +35,12 @@
     {% endfor %}
   </div>
 
-  <button type="button" id="add-translation">Add translation</button>
-  <button type="submit">Save</button>
+  <button type="button" id="add-translation" class="btn btn-outline-secondary">Add translation</button>
+  <button type="submit" class="btn btn-primary">Save</button>
 </form>
 
 <template id="translation-template">
-  <fieldset class="translation-form">
+  <fieldset class="translation-form border rounded p-3">
     <legend>Translation</legend>
     {{ empty_translation_form.as_p }}
 
@@ -53,7 +53,7 @@
         </div>
       {% endfor %}
     </div>
-    <button type="button" class="add-example">Add example</button>
+    <button type="button" class="add-example btn btn-outline-secondary btn-sm">Add example</button>
 
     <template class="example-template">
       <div class="example-form">

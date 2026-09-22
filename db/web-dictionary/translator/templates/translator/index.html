@@ -4,13 +4,13 @@
 
 {% block content %}
   <h1>Dictionary</h1>
-  <p><a href="{% url 'translator:create' %}">Create entry</a></p>
+  <p><a class="btn btn-primary" href="{% url 'translator:create' %}">Create entry</a></p>
 
   {% if entries %}
-    <ul>
+    <ul class="list-group">
       {% for entry in entries %}
         <li>
-          <a href="{% url 'translator:edit' entry.id %}">
+          <a class="list-group-item list-group-item-action" href="{% url 'translator:edit' entry.id %}">
             {{ entry.simplified_hanzi }} — {{ entry.pinyin_numeric }}
           </a>
         </li>

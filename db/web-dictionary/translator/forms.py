@@ -17,7 +17,19 @@ PARTS_OF_SPEECH = [
 ]
 
 
-class CreateDictionaryEntryForm(forms.ModelForm):
+class BootstrapFormMixin:
+    """Apply Bootstrap's standard controls to Django-generated fields."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if isinstance(field.widget, forms.CheckboxInput):
+                continue
+            css_class = "form-select" if isinstance(field.widget, forms.Select) else "form-control"
+            field.widget.attrs["class"] = css_class
+
+
+class CreateDictionaryEntryForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = DictionaryEntry
         fields = ["simplified_hanzi", "hsk"]
@@ -27,7 +39,7 @@ class CreateDictionaryEntryForm(forms.ModelForm):
         self.fields["hsk"].required = False
 
 
-class EditDictionaryEntryForm(forms.ModelForm):
+class EditDictionaryEntryForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = DictionaryEntry
         fields = ["simplified_hanzi", "pinyin_numeric", "hsk"]
@@ -38,7 +50,7 @@ class EditDictionaryEntryForm(forms.ModelForm):
         self.fields["hsk"].required = False
 
 
-class TranslationForm(forms.ModelForm):
+class TranslationForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Translation
         fields = ["portuguese", "part_of_speech", "translation_notes"]
@@ -49,13 +61,13 @@ class TranslationForm(forms.ModelForm):
         self.fields["translation_notes"].required = False
 
 
-class CreateExampleForm(forms.ModelForm):
+class CreateExampleForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Example
         fields = ["hanzi_simplified", "portuguese"]
 
 
-class EditExampleForm(forms.ModelForm):
+class EditExampleForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Example
         fields = ["hanzi_simplified", "pinyin", "portuguese"]

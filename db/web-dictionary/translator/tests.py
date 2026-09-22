@@ -18,6 +18,7 @@ class EditViewTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("pinyin_numeric", response.context["entry_form"].fields)
+        self.assertIn("hsk", response.context["entry_form"].fields)
         translation_formset = response.context["translation_formset"]
         self.assertEqual(translation_formset.total_form_count(), 0)
 
@@ -59,6 +60,7 @@ class EditViewTests(TestCase):
             {
                 "simplified_hanzi": "您好",
                 "pinyin_numeric": "nin2 hao3",
+                "hsk": "2",
                 "translations-TOTAL_FORMS": "1",
                 "translations-INITIAL_FORMS": "0",
                 "translations-MIN_NUM_FORMS": "0",
@@ -87,6 +89,7 @@ class EditViewTests(TestCase):
         )
         self.entry.refresh_from_db()
         self.assertEqual(self.entry.simplified_hanzi, "您好")
+        self.assertEqual(self.entry.hsk, 2)
         translation = Translation.objects.get(entry=self.entry)
         self.assertEqual(translation.portuguese, "olá")
         self.assertEqual(translation.translation_notes, "Formal greeting.")
@@ -152,6 +155,7 @@ class CreateViewTests(TestCase):
             translation_formset.forms[0].example_formset.total_form_count(), 2
         )
         self.assertNotIn("pinyin_numeric", response.context["entry_form"].fields)
+        self.assertIn("hsk", response.context["entry_form"].fields)
         self.assertNotIn(
             "pinyin", translation_formset.forms[0].example_formset.forms[0].fields
         )
@@ -163,6 +167,7 @@ class CreateViewTests(TestCase):
             {
                 "simplified_hanzi": "谢谢",
                 "pinyin_numeric": "this submitted value must be ignored",
+                "hsk": "1",
                 "translations-TOTAL_FORMS": "1",
                 "translations-INITIAL_FORMS": "0",
                 "translations-MIN_NUM_FORMS": "0",
@@ -185,6 +190,7 @@ class CreateViewTests(TestCase):
             response, reverse("translator:edit", args=[entry.pk])
         )
         self.assertEqual(entry.pinyin_numeric, "pinyin:谢谢")
+        self.assertEqual(entry.hsk, 1)
         translation = Translation.objects.get(entry=entry)
         self.assertEqual(translation.portuguese, "obrigado")
         self.assertEqual(Example.objects.filter(entry=translation).count(), 1)
